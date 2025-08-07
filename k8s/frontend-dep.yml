@@ -16,7 +16,7 @@ spec:
     spec:
         containers:
         - name: task-frontend
-          image: rohankhanal14/task-frontend:null
+          image: rohankhanal14/task-frontend:v2
           ports:
             - containerPort: 80
           resources:
