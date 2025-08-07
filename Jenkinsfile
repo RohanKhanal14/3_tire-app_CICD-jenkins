@@ -1,0 +1,103 @@
+@Library('Shared-Lib') _
+pipeline {
+    agent any
+    
+    environment{
+        SONAR_HOME = tool "Sonarqube"
+    }
+    
+    parameters {
+        string(name: 'FRONTEND_DOCKER_TAG', defaultValue: '', description: 'Setting docker image for latest push')
+        string(name: 'BACKEND_DOCKER_TAG', defaultValue: '', description: 'Setting docker image for latest push')
+    }
+    
+    stages {
+        stage("Validate Parameters") {
+            steps {
+                script {
+                    if (params.FRONTEND_DOCKER_TAG == '' || params.BACKEND_DOCKER_TAG == '') {
+                        error("FRONTEND_DOCKER_TAG and BACKEND_DOCKER_TAG must be provided.")
+                    }
+                }
+            }
+        }
+        stage("Workspace cleanup"){
+            steps{
+                script{
+                    cleanWs()
+                }
+            }
+        }
+        
+        stage('Git: Code Checkout') {
+            steps {
+                script{
+                    code_checkout("https://github.com/RohanKhanal14/3_tire-app_CICD-jenkins.git","main")
+                }
+            }
+        }
+        
+        stage("Trivy: Filesystem scan"){
+            steps{
+                script{
+                     trivy_scan()
+                }
+            }
+        }
+
+        // stage("OWASP: Dependency check"){
+        //     steps{
+        //         script{
+        //             owasp_dependency()
+        //         }
+        //     }
+        // }
+        
+        stage("SonarQube: Code Analysis"){
+            steps{
+                script{
+                    sonarqube_analysis("Sonarqube","task-app","task-app")
+                }
+            }
+        }
+        
+        stage("SonarQube: Code Quality Gates"){
+            steps{
+                script{
+                    sonarqube_code_quality()
+                }
+            }
+        }
+        
+        stage("Docker: Build Images"){
+            steps{
+                script{
+                        dir('backend'){
+                            docker_build("task-backend","${params.BACKEND_DOCKER_TAG}","rohankhanal14")
+                        }
+                    
+                        dir('frontend'){
+                            docker_build("task-frontend","${params.FRONTEND_DOCKER_TAG}","rohankhanal14")
+                        }
+                }
+            }
+        }
+        
+        stage("Docker: Push to DockerHub"){
+            steps{
+                script{
+                    docker_push("task-backend","${params.BACKEND_DOCKER_TAG}","rohankhanal14") 
+                    docker_push("task-frontend","${params.FRONTEND_DOCKER_TAG}","rohankhanal14")
+                }
+            }
+        }
+    }
+    post{
+        success{
+            build job: "taskapp-cd", parameters: [
+                string(name: 'FRONTEND_DOCKER_TAG', value: "${params.FRONTEND_DOCKER_TAG}"),
+                string(name: 'BACKEND_DOCKER_TAG', value: "${params.BACKEND_DOCKER_TAG}")
+            ]
+        }
+    }
+}
