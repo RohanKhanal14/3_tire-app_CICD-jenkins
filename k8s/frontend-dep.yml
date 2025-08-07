@@ -14,9 +14,9 @@ spec:
       labels:
         app: task-frontend
     spec:
-      containers:
-        - name: task-frontend
-          v1
+        containers:
+        - name: task-backend
+          image: rohankhanal14/task-frontend:cleanup
           ports:
             - containerPort: 80
           resources:
