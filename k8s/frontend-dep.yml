@@ -16,7 +16,7 @@ spec:
     spec:
         containers:
         - name: task-frontend
-          v1
+          image: rohankhanal14/task-frontend:cleanup
           ports:
             - containerPort: 80
           resources:
