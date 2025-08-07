@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: task-backend
-          image: rohankhanal14/task-backend:cleanup
+          v1
           ports:
             - containerPort: 5050
           env:
