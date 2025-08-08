@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: task-backend
-          image: rohankhanal14/task-backend:v2
+          image: rohankhanal14/task-backend:v3
           ports:
             - containerPort: 5050
           env:
