@@ -59,27 +59,27 @@ CMD ["npm", "start"]
 # Stage 3: Development Stage
 # =============================================================================
 # This stage includes all dependencies and development tools
-FROM node:20-alpine AS development
+# FROM node:20-alpine AS development
 
 # Set working directory
-WORKDIR /app
+# WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+# COPY package*.json ./
 
 # Install ALL dependencies (including devDependencies for development tools)
-RUN npm ci
+# RUN npm ci
 
 # Copy source code
 # In development, we typically mount the source as a volume for hot reload
-COPY . .
+# COPY . .
 
 # Expose the development port
-EXPOSE 5050
+# EXPOSE 5050
 
 # Start the application in development mode
 # If you have nodemon installed, you could use: CMD ["npm", "run", "dev"]
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
 
 
 
