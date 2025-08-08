@@ -55,26 +55,26 @@ CMD ["nginx", "-g", "daemon off;"]
 # Stage 3: Development Stage
 # =============================================================================
 # This stage runs Vite development server with hot reload
-FROM node:20 AS development
+# FROM node:20 AS development
 
 # Set working directory
-WORKDIR /app
+# WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+# COPY package*.json ./
 
 # Install all dependencies including devDependencies
 # Development needs all packages for hot reload and debugging
-RUN npm ci
+# RUN npm ci
 
 # Copy source code
 # In development, source is typically mounted as volume for live changes
-COPY . .
+# COPY . .
 
 # Expose Vite development server port
 # Vite default development port
-EXPOSE 5173
+# EXPOSE 5173
 
 # Start Vite development server
 # --host 0.0.0.0 allows external connections from Docker host
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+# CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
